@@ -35,23 +35,24 @@ type ArticleParamsFormProps = {
 export const ArticleParamsForm = ({
 	setArticleState,
 }: ArticleParamsFormProps) => {
-	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 	const [formState, setFormState] =
 		useState<ArticleStateType>(defaultArticleState);
 	const formRef = useRef<HTMLDivElement | null>(null);
 
 	const toggleOpen = () => {
-		setIsOpen((prev) => !prev);
+		setIsMenuOpen((prev) => !prev);
 	};
 
 	useEffect(() => {
+		if (!isMenuOpen) return;
 		const handleClickOutside = (event: MouseEvent) => {
 			if (
-				isOpen &&
+				isMenuOpen &&
 				formRef.current &&
 				!formRef.current.contains(event.target as Node)
 			) {
-				setIsOpen(false);
+				setIsMenuOpen(false);
 			}
 		};
 
@@ -59,7 +60,7 @@ export const ArticleParamsForm = ({
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
-	}, [isOpen]);
+	}, [isMenuOpen]);
 
 	const updateArticleState = (
 		key: keyof ArticleStateType,
@@ -83,12 +84,12 @@ export const ArticleParamsForm = ({
 
 	return (
 		<>
-			<ArrowButton isOpen={isOpen} onClick={toggleOpen} />
+			<ArrowButton isOpen={isMenuOpen} onClick={toggleOpen} />
 
 			<aside
 				ref={formRef}
 				className={clsx(styles.container, {
-					[styles.container_open]: isOpen,
+					[styles.container_open]: isMenuOpen,
 				})}>
 				<form className={styles.form} onSubmit={handleSubmit}>
 					<Text as='h1' size={31} weight={800} uppercase align='left'>
